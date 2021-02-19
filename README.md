@@ -24,7 +24,7 @@ main.py --mode evaluate
 #### High Image
 ![High Image](result/model_b/high_b_38.jpg)
 
-#### Low Image PSNR:36.46dB
+#### Low Image PSNR:32.34dB
 ![Low Image](result/model_b/low_b_38.jpg)
-#### Pred Image PSNR:37.29dB
+#### Pred Image PSNR:34.56dB
 ![Pred Image](result/model_b/pred_b_38.jpg)
