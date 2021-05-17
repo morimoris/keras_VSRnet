@@ -1,181 +1,73 @@
 from tensorflow.python.keras.models import Model
-from tensorflow.python.keras.layers import Conv2D, Input, Add, Concatenate, Dropout
+from tensorflow.python.keras.layers import Conv2D, Input, Concatenate
 
-import numpy as np
-import tensorflow as tf
-from tensorflow.python import keras
-from tensorflow.python.keras import layers
+class VSRnet():
+    def __init__(self):
+        self.input_channels = 1
+        self.input_LR_num = 3
 
-def vsrnet_model_a():
-    tminus1_input = Input(shape = (None, None, 1), name = "tminus1")
-    t_input = Input(shape = (None, None, 1), name = "t")
-    tplus1_input = Input(shape = (None, None, 1), name = "tplus1")
+    def model_a(self):
+        #input video frames
+        input_list = self.input_LR_num * [None]
+        for img in range(self.input_LR_num): 
+            input_list[img] = Input(shape = (None, None, self.input_channels), name = "input_" + str((img)))
 
-    input_shape = Concatenate()([tminus1_input, t_input, tplus1_input])
+        new_input = Concatenate()(input_list)
 
-    conv2d_0 = Conv2D(filters = 64,
-                    kernel_size = (9, 9),
-                    padding = "same",
-                    activation = "relu"
-                    # kernel_regularizer=keras.regularizers.l2(0.0005),
-                    )(input_shape)
+        conv2d_0 = Conv2D(filters = 64, kernel_size = (9, 9), padding = "same", activation = "relu")(new_input)
+        conv2d_1 = Conv2D(filters = 32, kernel_size = (5, 5), padding = "same", activation = "relu")(conv2d_0)
+        conv2d_2 =  Conv2D(filters = self.input_channels, kernel_size = (5, 5), padding = "same")(conv2d_1)
 
-    conv2d_1 = Conv2D(filters = 32,
-                    kernel_size = (5, 5),
-                    # kernel_regularizer=keras.regularizers.l2(0.0005),
-                    padding = "same",
-                    activation = "relu"
-                    )(conv2d_0)
+        model = Model(inputs = input_list, outputs = conv2d_2)
+        model.summary()
 
-    conv2d_2 =  Conv2D(filters = 1,
-                    kernel_size = (5, 5),
-                    # kernel_regularizer=keras.regularizers.l2(0.0005),
-                    padding = "same",
-                    )(conv2d_1)
+        return model
 
-    model = Model(inputs = [tminus1_input, t_input, tplus1_input], outputs = [conv2d_2])
+    def model_b(self):
+        #input video frames
+        input_list = self.input_LR_num * [None]
+        for img in range(self.input_LR_num): 
+            input_list[img] = Input(shape = (None, None, self.input_channels), name = "input_" + str((img)))
 
-    model.summary()
+        #convolution each images
+        conv2d_0_tminus1 = Conv2D(filters = 64, kernel_size = (9, 9), padding = "same", activation = "relu")(input_list[0])
+        conv2d_0_t = Conv2D(filters = 64, kernel_size = (9, 9), padding = "same", activation = "relu")(input_list[0])
+        conv2d_0_tplus1 = Conv2D(filters = 64, kernel_size = (9, 9), padding = "same", activation = "relu")(input_list[0])
 
-    return model
+        #concatenate each results
+        new_input = Concatenate()([conv2d_0_tminus1, conv2d_0_t, conv2d_0_tplus1])
 
-def vsrnet_model_b():
-    tminus1_input = Input(shape = (None, None, 1), name = "tminus1")
-    t_input = Input(shape = (None, None, 1), name = "t")
-    tplus1_input = Input(shape = (None, None, 1), name = "tplus1")
+        #convolution
+        conv2d_1 = Conv2D(filters = 32, kernel_size = (5, 5), padding = "same", activation = "relu")(new_input)
+        conv2d_2 =  Conv2D(filters = self.input_channels, kernel_size = (5, 5), padding = "same")(conv2d_1)
 
-    conv2d_0_tminus1 = Conv2D(filters = 64,
-                            kernel_size = (9, 9),
-                            # kernel_regularizer=keras.regularizers.l2(0.0005),
-                            padding = "same",
-                            activation = "relu",
-                            )(tminus1_input)
+        model = Model(inputs = input_list, outputs = conv2d_2)
+        model.summary()
 
+        return model
 
-    conv2d_0_t = Conv2D(filters = 64,
-                        kernel_size = (9, 9),
-                        # kernel_regularizer=keras.regularizers.l2(0.0005),
-                        padding = "same",
-                        activation = "relu",
-                        )(t_input)
+    def model_c(self):
+        #input video frames
+        input_list = self.input_LR_num * [None]
+        for img in range(self.input_LR_num): 
+            input_list[img] = Input(shape = (None, None, self.input_channels), name = "input_" + str((img)))
 
+       #convolution each images
+        conv2d_0_tminus1 = Conv2D(filters = 64, kernel_size = (9, 9), padding = "same", activation = "relu")(input_list[0])
+        conv2d_0_t = Conv2D(filters = 64, kernel_size = (9, 9), padding = "same", activation = "relu")(input_list[0])
+        conv2d_0_tplus1 = Conv2D(filters = 64, kernel_size = (9, 9), padding = "same", activation = "relu")(input_list[0])
 
-    conv2d_0_tplus1 = Conv2D(filters = 64,
-                            kernel_size = (9, 9),
-                            # kernel_regularizer=keras.regularizers.l2(0.0005),
-                            padding = "same",
-                            activation = "relu",
-                            )(tplus1_input)
+        conv2d_1_tminus1 = Conv2D(filters = 32, kernel_size = (5, 5), padding = "same", activation = "relu")(conv2d_0_tminus1)
+        conv2d_1_t = Conv2D(filters = 32, kernel_size = (5, 5), padding = "same", activation = "relu")(conv2d_0_t)
+        conv2d_1_tplus1 = Conv2D(filters = 32, kernel_size = (5, 5), padding = "same", activation = "relu")(conv2d_0_tplus1)
 
+        new_input = Concatenate()([conv2d_1_tminus1, conv2d_1_t, conv2d_1_tplus1])
 
-    new_input = Concatenate()([conv2d_0_tminus1, conv2d_0_t, conv2d_0_tplus1])
+        conv2d_2 =  Conv2D(filters = self.input_channels, kernel_size = (5, 5), padding = "same")(new_input)
 
-    conv2d_1 = Conv2D(filters = 32,
-                    kernel_size = (5, 5),
-                    # kernel_regularizer=keras.regularizers.l2(0.0005),
-                    padding = "same",
-                    activation = "relu"
-                    )(new_input)
+        model = Model(inputs = input_list, outputs = conv2d_2)
 
-    conv2d_2 =  Conv2D(filters = 1,
-                    kernel_size = (5, 5),
-                    # kernel_regularizer=keras.regularizers.l2(0.0005),
-                    padding = "same",
-                    )(conv2d_1)
+        model.summary()
 
-    model = Model(inputs = [tminus1_input, t_input, tplus1_input], outputs = [conv2d_2])
+        return model
 
-    model.summary()
-
-    return model
-
-def vsrnet_model_c():
-    tminus1_input = Input(shape = (None, None, 1), name = "tminus1")
-    t_input = Input(shape = (None, None, 1), name = "t")
-    tplus1_input = Input(shape = (None, None, 1), name = "tplus1")
-
-    conv2d_0_tminus1 = Conv2D(filters = 64,
-                            kernel_size = (9, 9),
-                            # kernel_regularizer=keras.regularizers.l2(0.0005),
-                            padding = "same",
-                            activation = "relu",
-                            )(tminus1_input)
-
-    conv2d_1_tminus1 = Conv2D(filters = 32,
-                            kernel_size = (5, 5),
-                            # kernel_regularizer=keras.regularizers.l2(0.0005),
-                            padding = "same",
-                            activation = "relu"
-                            )(conv2d_0_tminus1)
-
-
-    conv2d_0_t = Conv2D(filters = 64,
-                        kernel_size = (9, 9),
-                        # kernel_regularizer=keras.regularizers.l2(0.0005),
-                        padding = "same",
-                        activation = "relu",
-                        )(t_input)
-                     
-    conv2d_1_t = Conv2D(filters = 32,
-                            kernel_size = (5, 5),
-                            # kernel_regularizer=keras.regularizers.l2(0.0005),
-                            padding = "same",
-                            activation = "relu"
-                            )(conv2d_0_t)
-
-
-    conv2d_0_tplus1 = Conv2D(filters = 64,
-                            kernel_size = (9, 9),
-                            # kernel_regularizer=keras.regularizers.l2(0.0005),
-                            padding = "same",
-                            activation = "relu",
-                            )(tplus1_input)
-                      
-    conv2d_1_tplus1 = Conv2D(filters = 32,
-                            kernel_size = (5, 5),
-                            # kernel_regularizer=keras.regularizers.l2(0.0005),
-                            padding = "same",
-                            activation = "relu"
-                            )(conv2d_0_tplus1)
-
-
-    new_input = Concatenate()([conv2d_1_tminus1, conv2d_1_t, conv2d_1_tplus1])
-
-    conv2d_2 =  Conv2D(filters = 1,
-                    kernel_size = (5, 5),
-                    # kernel_regularizer=keras.regularizers.l2(0.0005),
-                    padding = "same",
-                    )(new_input)
-
-    model = Model(inputs = [tminus1_input, t_input, tplus1_input], outputs = [conv2d_2])
-
-    model.summary()
-
-    return model
-
-def srcnn():
-    input_shape = Input((None, None, 1))
-
-    conv2d_0 = Conv2D(filters = 64,
-                        kernel_size = (9, 9),
-                        padding = "same",
-                        activation = "relu",
-                        kernel_regularizer=keras.regularizers.l2(0.0005)
-                        )(input_shape)
-    conv2d_1 = Conv2D(filters = 32,
-                        kernel_size = (1, 1),
-                        padding = "same",
-                        activation = "relu",
-                        kernel_regularizer=keras.regularizers.l2(0.0005)
-                        )(conv2d_0)
-    conv2d_2 = Conv2D(filters = 1,
-                        kernel_size = (5, 5),
-                        padding = "same",
-                        kernel_regularizer=keras.regularizers.l2(0.0005)
-                        )(conv2d_1)
-
-    model = Model(inputs = input_shape, outputs = [conv2d_2])
-
-    model.summary()
-
-    return model
