@@ -14,11 +14,11 @@ https://seungjunnah.github.io/Datasets/reds.html
 
 2Learning
 ```
-main.py --mode srcnn
+main.py --mode train_model_b
 ```
 3.Evaluate
 ```
-main.py --mode evaluate
+main.py --mode evaluate_b
 ```
 ### Result example
 #### High Image
