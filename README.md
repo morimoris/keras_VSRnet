@@ -1,30 +1,3 @@
-# keras_vsrnet
+## Overview (Japanese)
 
-### Overview
-I created Video Super Resolution with Convolutional Neural Networks using Python and Keras.
-
-### Experiment environment
-- OS : Windows 10
-- CPU : AMD Ryzen 5 3500 6-Core Processor 8GB
-- GPU : NVIDIA GeForce RTX 2060 SUPER
-
-### How to use
-1.Downloads REDS datasets.
-https://seungjunnah.github.io/Datasets/reds.html
-
-2Learning
-```
-main.py --mode train_model_b
-```
-3.Evaluate
-```
-main.py --mode evaluate_b
-```
-### Result example
-#### High Image
-![High Image](result/model_b/high_b_38.jpg)
-
-#### Low Image PSNR:32.34dB
-![Low Image](result/model_b/low_b_38.jpg)
-#### Pred Image PSNR:34.56dB
-![Pred Image](result/model_b/pred_b_38.jpg)
+https://qiita.com/morimoris/items/f9ffc404e6f4f1f72011
