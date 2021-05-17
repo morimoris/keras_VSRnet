@@ -47,8 +47,8 @@ class datacreate:
                 break
 
             for p in range(cut_frame):          
-                ram_h = random.randint(0, height // self.mag - cut_height)
-                ram_w = random.randint(0, width // self.mag - cut_width)
+                ram_h = random.randint(0, height - cut_height)
+                ram_w = random.randint(0, width  - cut_width)
 
                 for i in range(self.LR_num):
                     cut_low_bi = self.low_img_list[i][ram_h : ram_h + cut_height, ram_w: ram_w + cut_width]
