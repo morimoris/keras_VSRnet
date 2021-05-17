@@ -31,8 +31,8 @@ class VSRnet():
 
         #convolution each images
         conv2d_0_tminus1 = Conv2D(filters = 64, kernel_size = (9, 9), padding = "same", activation = "relu")(input_list[0])
-        conv2d_0_t = Conv2D(filters = 64, kernel_size = (9, 9), padding = "same", activation = "relu")(input_list[0])
-        conv2d_0_tplus1 = Conv2D(filters = 64, kernel_size = (9, 9), padding = "same", activation = "relu")(input_list[0])
+        conv2d_0_t = Conv2D(filters = 64, kernel_size = (9, 9), padding = "same", activation = "relu")(input_list[1])
+        conv2d_0_tplus1 = Conv2D(filters = 64, kernel_size = (9, 9), padding = "same", activation = "relu")(input_list[2])
 
         #concatenate each results
         new_input = Concatenate()([conv2d_0_tminus1, conv2d_0_t, conv2d_0_tplus1])
@@ -54,8 +54,8 @@ class VSRnet():
 
        #convolution each images
         conv2d_0_tminus1 = Conv2D(filters = 64, kernel_size = (9, 9), padding = "same", activation = "relu")(input_list[0])
-        conv2d_0_t = Conv2D(filters = 64, kernel_size = (9, 9), padding = "same", activation = "relu")(input_list[0])
-        conv2d_0_tplus1 = Conv2D(filters = 64, kernel_size = (9, 9), padding = "same", activation = "relu")(input_list[0])
+        conv2d_0_t = Conv2D(filters = 64, kernel_size = (9, 9), padding = "same", activation = "relu")(input_list[1])
+        conv2d_0_tplus1 = Conv2D(filters = 64, kernel_size = (9, 9), padding = "same", activation = "relu")(input_list[2])
 
         conv2d_1_tminus1 = Conv2D(filters = 32, kernel_size = (5, 5), padding = "same", activation = "relu")(conv2d_0_tminus1)
         conv2d_1_t = Conv2D(filters = 32, kernel_size = (5, 5), padding = "same", activation = "relu")(conv2d_0_t)
